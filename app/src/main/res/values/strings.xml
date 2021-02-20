@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AccuraMRZSDK</string>
+    <string name="passport_mrz"><![CDATA[Passport MRZ]]></string>
+    <string name="id_mrz"><![CDATA[ID Card MRZ]]></string>
+    <string name="visa_mrz"><![CDATA[VISA MRZ]]></string>
+    <string name="other_mrz"><![CDATA[Other MRZ]]></string>
+</resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/lout_country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.accurascan.ocr.mrz.customview.CustomTextView
+            android:id="@+id/lout_passport_mrz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:background="@drawable/btn_bg_gray"
+            android:padding="@dimen/_15dp"
+            android:text="@string/passport_mrz"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:typeface="ALLER_STD_REG" />
+
+        <com.accurascan.ocr.mrz.customview.CustomTextView
+            android:id="@+id/lout_id_mrz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:background="@drawable/btn_bg_gray"
+            android:padding="@dimen/_15dp"
+            android:text="@string/id_mrz"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:typeface="ALLER_STD_REG" />
+
+        <com.accurascan.ocr.mrz.customview.CustomTextView
+            android:id="@+id/lout_visa_mrz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:background="@drawable/btn_bg_gray"
+            android:padding="@dimen/_15dp"
+            android:text="@string/visa_mrz"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:typeface="ALLER_STD_REG" />
+
+        <com.accurascan.ocr.mrz.customview.CustomTextView
+            android:id="@+id/lout_mrz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:background="@drawable/btn_bg_gray"
+            android:padding="@dimen/_15dp"
+            android:text="@string/other_mrz"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:typeface="ALLER_STD_REG" />
+
+    </LinearLayout>
+
+</LinearLayout>
