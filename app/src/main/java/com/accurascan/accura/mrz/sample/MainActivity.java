@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         recogEngine.isCheckPhotoCopy(activity, false);
                         recogEngine.SetHologramDetection(activity, true);
                         recogEngine.setLowLightTolerance(activity, 39);
-                        recogEngine.setMotionData(activity, 18);
+                        recogEngine.setMotionThreshold(activity, 18);
 
                         activity.handler.sendEmptyMessage(1);
                     } else
