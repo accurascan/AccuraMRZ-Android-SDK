@@ -32,7 +32,7 @@ Below steps to setup Accura MRZ SDK's to your project.
         }
     }
     dependencies {
-        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:1.0.2'
+        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:1.0.3
     }
 
 #### Step 4: Add files to project assets folder:
