@@ -103,6 +103,7 @@ public class OcrResultActivity extends AppCompatActivity {
             addLayout("Department No.", recogResult.departmentnumber);
             addLayout("Other ID", recogResult.otherid);
             addLayout("Other ID Check", recogResult.otheridchecksum);
+            addLayout("Other ID 2", recogResult.otherid2);
             addLayout("Second Row Check No.", recogResult.secondrowchecksum);
             addLayout("Correct Second Row Check No.", recogResult.correctsecondrowchecksum);
         } catch (Exception e) {

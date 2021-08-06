@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     RecogEngine recogEngine = new RecogEngine();
                     AccuraLog.enableLogs(true); // make sure to disable logs in release mode
+                    AccuraLog.refreshLogfile(activity);
                     recogEngine.setDialog(false); // setDialog(false) To set your custom dialog for license validation
                     activity.sdkModel = recogEngine.initEngine(activity);
                     AccuraLog.loge(TAG, "Initialized Engine : " + activity.sdkModel.i + " -> " + activity.sdkModel.message);
@@ -120,23 +121,6 @@ public class MainActivity extends AppCompatActivity {
     private RecogEngine.SDKModel sdkModel;
     private String responseMessage;
     private Handler handler = new MyHandler(this);
-
-    // must have to required storage permission to print logs
-    public void printLog() {
-        File file = new File(Environment.getExternalStorageDirectory(), "AccuraKYCDemo.log");
-        String command = "logcat -f "+ file.getPath() + " -v time *:V";
-        Log.d(TAG, "command: " + command);
-
-        try{
-            Runtime.getRuntime().exec(command);
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-        Intent scanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        scanIntent.setData(Uri.fromFile(file));
-        sendBroadcast(scanIntent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doWork() {
-        printLog();  // Create Log file
         progressBar = new ProgressDialog(this);
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressBar.setMessage("Please wait...");
