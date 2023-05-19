@@ -71,7 +71,6 @@ public class OcrActivity extends SensorsActivity implements OcrCallback {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         super.onCreate(savedInstanceState);
-        setTheme(R.style.AppThemeNoActionBar);
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hide the window title.
         setContentView(R.layout.ocr_activity);
         AccuraLog.loge(TAG, "Start Camera Activity");
@@ -101,6 +100,7 @@ public class OcrActivity extends SensorsActivity implements OcrCallback {
 
         cameraView = new CameraView(this);
         cameraView.setMRZDocumentType(mrzType)
+                .setMRZCountryCodeList("all")
                 .setView(linearLayout) // To add camera view
                 .setCameraFacing(0) // To set front or back camera.
                 .setOcrCallback(this)  // To get Update and Success Call back

@@ -15,6 +15,19 @@
         android:orientation="vertical">
 
         <com.accurascan.ocr.mrz.customview.CustomTextView
+            android:id="@+id/lout_captured_mrz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5dp"
+            android:background="@drawable/btn_bg_gray"
+            android:padding="@dimen/_15dp"
+            android:text="Use Captured Image"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:typeface="ALLER_STD_REG" />
+
+        <com.accurascan.ocr.mrz.customview.CustomTextView
             android:id="@+id/lout_passport_mrz"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

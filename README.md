@@ -27,12 +27,12 @@ Below steps to setup Accura MRZ SDK's to your project.
 
     android {
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_8
-            targetCompatibility JavaVersion.VERSION_1_8
+            sourceCompatibility JavaVersion.VERSION_11
+            targetCompatibility JavaVersion.VERSION_11
         }
     }
     dependencies {
-        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:2.1.0'
+        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.4'
     }
 
 #### Step 4: Add files to project assets folder:
@@ -139,6 +139,10 @@ private void initCamera() {
     // 3. ID card MRZ document   - MRZDocumentType.ID_CARD_MRZ 
     // 4. Visa MRZ document      - MRZDocumentType.VISA_MRZ    
     cameraView.setMRZDocumentType(MRZDocumentType.NONE);
+    
+    // Pass 'all' for accepting MRZs of all countries
+    // or you can pass respective country codes of countries whose MRZ you want to accept. Eg:- 'IND', 'USA', 'TUN', etc.
+    cameraView.setMRZCountryCodeList("all");
     
     cameraView.setView(linearLayout) // To add camera view
             .setCameraFacing(0) // // To set selfie(1) or rear(0) camera.
@@ -316,6 +320,33 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
     }
 }
 ```
+
+## 2. Detect MRZ from pre-captured Image 
+* Require `key.license` to implement Accura MRZ in to your app
+
+#### Step 1 : To initialize sdk on app start:
+
+    RecogEngine recogEngine = new RecogEngine();
+    RecogEngine.SDKModel sdkModel = recogEngine.initEngine(your activity context);
+
+    if (sdkModel.i > 0) { // means license is valid
+         if (sdkModel.isMRZEnable) // True if MRZ option is selected while creating license
+    }
+
+#### Step 2 : Detect MRZ from image: 
+
+Use below function to detect image from Image
+     
+     RecogResult result = recogEngine.detectFromCapturedImage(bitmap, MRZDocumentType.NONE, "all");
+
+     // MRZ document type to scan specific MRZ document
+     // 1. ALL MRZ document       - MRZDocumentType.NONE        
+     // 2. Passport MRZ document  - MRZDocumentType.PASSPORT_MRZ
+     // 3. ID card MRZ document   - MRZDocumentType.ID_CARD_MRZ
+     // 4. Visa MRZ document      - MRZDocumentType.VISA_MRZ
+
+     // Pass 'all' for accepting MRZs of all countries
+     // or you can pass respective country codes of countries whose MRZ you want to accept. Eg:- 'IND', 'USA', 'TUN', etc.
 
 ## ProGuard
 
