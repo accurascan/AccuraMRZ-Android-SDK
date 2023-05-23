@@ -32,7 +32,7 @@ Below steps to setup Accura MRZ SDK's to your project.
         }
     }
     dependencies {
-        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.4'
+        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.4.1'
     }
 
 #### Step 4: Add files to project assets folder:
@@ -336,8 +336,9 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
 #### Step 2 : Detect MRZ from image: 
 
 Use below function to detect image from Image
+**Note :** The optimal size of card image should be around 1200 width for accurate results.
      
-     RecogResult result = recogEngine.detectFromCapturedImage(bitmap, MRZDocumentType.NONE, "all");
+     RecogResult result = recogEngine.detectFromCapturedImage(cardImage, MRZDocumentType.NONE, "all");
 
      // MRZ document type to scan specific MRZ document
      // 1. ALL MRZ document       - MRZDocumentType.NONE        
