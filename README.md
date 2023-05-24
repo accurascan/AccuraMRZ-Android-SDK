@@ -49,7 +49,7 @@ Below steps to setup Accura MRZ SDK's to your project.
     RecogEngine recogEngine = new RecogEngine();
     RecogEngine.SDKModel sdkModel = recogEngine.initEngine(your activity context);
 
-    if (sdkModel.i > 0) { // means license is valid
+    if (sdkModel.i >= 0) { // means license is valid
          if (sdkModel.isMRZEnable) // True if MRZ option is selected while creating license
     }
 
