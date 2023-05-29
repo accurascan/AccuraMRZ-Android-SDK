@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                                     = MediaStore.Images.Media.getBitmap(
                                     MainActivity.this.getContentResolver(),
                                     selectedImageUri[0]);
-                            RecogResult result = engine.detectFromCapturedImage(selectedImageBitmap, MRZDocumentType.NONE, "all");
+                            RecogResult result = engine.detectFromCapturedImage(selectedImageBitmap, MRZDocumentType.NONE, "all", 1);
 
                             if (progressBar != null && progressBar.isShowing()) {
                                 progressBar.dismiss();

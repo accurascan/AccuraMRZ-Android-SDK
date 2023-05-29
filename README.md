@@ -32,7 +32,7 @@ Below steps to setup Accura MRZ SDK's to your project.
         }
     }
     dependencies {
-        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.4.1'
+        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.5'
     }
 
 #### Step 4: Add files to project assets folder:
@@ -143,6 +143,10 @@ private void initCamera() {
     // Pass 'all' for accepting MRZs of all countries
     // or you can pass respective country codes of countries whose MRZ you want to accept. Eg:- 'IND', 'USA', 'TUN', etc.
     cameraView.setMRZCountryCodeList("all");
+    
+    // Set 1,2,3,... for wait till the number of frame if face not detecing from the document
+    // or set 0 then it'll not detect face 
+    cameraView.setDetectFaceCustomization(3)
     
     cameraView.setView(linearLayout) // To add camera view
             .setCameraFacing(0) // // To set selfie(1) or rear(0) camera.
@@ -338,7 +342,7 @@ protected void onActivityResult(int requestCode, int resultCode, @Nullable Inten
 Use below function to detect image from Image
 **Note :** The optimal size of card image should be around 1200 width for accurate results.
      
-     RecogResult result = recogEngine.detectFromCapturedImage(cardImage, MRZDocumentType.NONE, "all");
+     RecogResult result = recogEngine.detectFromCapturedImage(cardImage, MRZDocumentType.NONE, "all", 1/*detectFace*/);
 
      // MRZ document type to scan specific MRZ document
      // 1. ALL MRZ document       - MRZDocumentType.NONE        
@@ -348,6 +352,8 @@ Use below function to detect image from Image
 
      // Pass 'all' for accepting MRZs of all countries
      // or you can pass respective country codes of countries whose MRZ you want to accept. Eg:- 'IND', 'USA', 'TUN', etc.
+
+     // 4th parameter detectFace set 1 for detect face from image. or set 0 to for do not detect face
 
 ## ProGuard
 

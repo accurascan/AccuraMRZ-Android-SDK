@@ -101,6 +101,7 @@ public class OcrActivity extends SensorsActivity implements OcrCallback {
         cameraView = new CameraView(this);
         cameraView.setMRZDocumentType(mrzType)
                 .setMRZCountryCodeList("all")
+                .setDetectFaceCustomization(3)
                 .setView(linearLayout) // To add camera view
                 .setCameraFacing(0) // To set front or back camera.
                 .setOcrCallback(this)  // To get Update and Success Call back
