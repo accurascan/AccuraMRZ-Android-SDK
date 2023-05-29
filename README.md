@@ -144,8 +144,10 @@ private void initCamera() {
     // or you can pass respective country codes of countries whose MRZ you want to accept. Eg:- 'IND', 'USA', 'TUN', etc.
     cameraView.setMRZCountryCodeList("all");
     
-    // Set 1,2,3,... for wait till the number of frame if face not detecing from the document
-    // or set 0 then it'll not detect face 
+   
+//Set the integer number indicating the desired number of face detection attempts from the document.The SDK will attempt to detect the face accordingly
+
+// Set the value to '0' if you do not wish to perform face detection on the document 
     cameraView.setDetectFaceCustomization(3)
     
     cameraView.setView(linearLayout) // To add camera view
@@ -353,7 +355,7 @@ Use below function to detect image from Image
      // Pass 'all' for accepting MRZs of all countries
      // or you can pass respective country codes of countries whose MRZ you want to accept. Eg:- 'IND', 'USA', 'TUN', etc.
 
-     // 4th parameter detectFace set 1 for detect face from image. or set 0 to for do not detect face
+     // Pass '1' to the 4th Parameter if you wish to detect face from the document, else pass '0'. 
 
 ## ProGuard
 
