@@ -20,19 +20,19 @@ Below steps to setup Accura MRZ SDK's to your project.
 
 #### Step 2. Add the token to `gradle.properties`:
 
-    authToken=jp_9ldoc7h8fl5gbk4rsojgdiupa9
+    authToken=jp_45kf9tvkijvd9c7cf34mehj1b6
 
 #### Step 3: Add the dependency:
     Set Accura MRZ SDK as a dependency to our app/build.gradle file.
 
     android {
         compileOptions {
-            sourceCompatibility JavaVersion.VERSION_11
-            targetCompatibility JavaVersion.VERSION_11
+            sourceCompatibility JavaVersion.VERSION_17
+            targetCompatibility JavaVersion.VERSION_17
         }
     }
     dependencies {
-        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.5'
+        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.6'
     }
 
 #### Step 4: Add files to project assets folder:
