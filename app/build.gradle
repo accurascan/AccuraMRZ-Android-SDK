@@ -25,9 +25,10 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+    namespace 'com.accurascan.accura.mrz.sample'
 }
 
 dependencies {
@@ -44,6 +45,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
 
     // implement Accura MRZ SDK
-    implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.5'
+    implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.6'
 
 }
