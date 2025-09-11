@@ -20,7 +20,7 @@ Below steps to setup Accura MRZ SDK's to your project.
 
 #### Step 2. Add the token to `gradle.properties`:
 
-    authToken=jp_45kf9tvkijvd9c7cf34mehj1b6
+    authToken=jp_g8ttn08p68n9brtt8jshql7q33
 
 #### Step 3: Add the dependency:
     Set Accura MRZ SDK as a dependency to our app/build.gradle file.
@@ -32,7 +32,7 @@ Below steps to setup Accura MRZ SDK's to your project.
         }
     }
     dependencies {
-        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.6'
+        implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.7'
     }
 
 #### Step 4: Add files to project assets folder:
@@ -52,6 +52,14 @@ Below steps to setup Accura MRZ SDK's to your project.
     if (sdkModel.i >= 0) { // means license is valid
          if (sdkModel.isMRZEnable) // True if MRZ option is selected while creating license
     }
+
+#### Optional: Load License File Dynamically
+If you prefer to place the license file dynamically, you can use the following method. This allows you to specify the license file path at runtime.
+For a demo of dynamic licensing, please refer to the **dynamic_license_demo** branch.
+```
+RecogEngine.SDKModel sdkModel = recogEngine.initEngine(activity, "your license filepath");
+
+```
 
 ##### Update filters like below.</br>
   Call this function after initialize sdk if license is valid(sdkModel.i > 0)
