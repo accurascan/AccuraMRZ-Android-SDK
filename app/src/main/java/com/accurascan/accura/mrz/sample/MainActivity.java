@@ -1,20 +1,26 @@
 package com.accurascan.accura.mrz.sample;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -30,10 +36,17 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.accurascan.accura.mrz.sample.download.AccuraDownloadListener;
+import com.accurascan.accura.mrz.sample.download.DownloadUtils;
 import com.accurascan.ocr.mrz.model.RecogResult;
 import com.accurascan.ocr.mrz.util.AccuraLog;
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
 import com.docrecog.scan.MRZDocumentType;
 import com.docrecog.scan.RecogEngine;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,10 +109,13 @@ public class MainActivity extends AppCompatActivity {
             if (activity != null) {
                 try {
                     RecogEngine recogEngine = new RecogEngine();
-                    AccuraLog.enableLogs(true); // make sure to disable logs in release mode
+                    AccuraLog.enableLogs(false); // make sure to disable logs in release mode
                     AccuraLog.refreshLogfile(activity);
                     recogEngine.setDialog(false); // setDialog(false) To set your custom dialog for license validation
-                    activity.sdkModel = recogEngine.initEngine(activity);
+                    if (!TextUtils.isEmpty(activity.keyLicensePath)) {
+                        activity.sdkModel = recogEngine.initEngine(activity, activity.keyLicensePath);
+                    } else
+                        activity.sdkModel = recogEngine.initEngine(activity);
                     AccuraLog.loge(TAG, "Initialized Engine : " + activity.sdkModel.i + " -> " + activity.sdkModel.message);
                     activity.responseMessage = activity.sdkModel.message;
 
@@ -130,11 +146,151 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler = new MyHandler(this);
     final private int PICK_IMAGE = 1; // request code of select image from gallery
 
+    private SharedPreferences sharedPreferences;
+    String keyLicensePath;
+    // Progress Dialog
+    private ProgressDialog pDialog;
+
+    protected Dialog showProgressDialog() {
+        pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Downloading file. Please wait...");
+        pDialog.setIndeterminate(false);
+        pDialog.setMax(100);
+        pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pDialog.setCanceledOnTouchOutside(false);
+        pDialog.setCancelable(false);
+        pDialog.show();
+        return pDialog;
+
+    }
+    public void downloadTextFile(Context context, final String link) {
+        NetworkInfo activeNetworkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (!(activeNetworkInfo != null && activeNetworkInfo.isConnected())) {
+            onErrora("Please check your internet connection", null);
+            return;
+        }
+
+        String oldVersion = sharedPreferences.getString(DownloadUtils.LICENSE_VERSION, "");
+        String lastSavedFile = sharedPreferences.getString(DownloadUtils.LICENSE_NAME, "");
+
+        File licenseDir = new File(context.getFilesDir().toString(), "accura");
+        DownloadUtils.getInstance(new AccuraDownloadListener() {
+            @Override
+            public void onDownloadComplete(String licenseDetails) {
+                String latestVersion = "";
+                String keyfileName = "";
+                try {
+                    JSONObject jsonObject = new JSONObject(licenseDetails);
+                    if (!jsonObject.has("Android")) {
+                        onErrora("Please add license details for Android", null);
+                        return;
+                    }
+                    JSONObject object = jsonObject.getJSONObject("Android");
+
+                    if (object.has("ocr_license") && !TextUtils.isEmpty(object.getString("ocr_license"))) {
+                        keyfileName = object.getString("ocr_license");
+                    }
+                    if (jsonObject.has("version") && !TextUtils.isEmpty(jsonObject.getString("version"))) {
+                        latestVersion = jsonObject.getString("version");
+                    }
+                } catch (JSONException e) {
+                    AccuraLog.loge(TAG, Log.getStackTraceString(e));
+                }
+
+                if (TextUtils.isEmpty(keyfileName)) {
+                    onErrora("File details not valid", null);
+                    return;
+                }
+
+                // check to download license by using version
+                if (lastSavedFile.isEmpty() || oldVersion.isEmpty() || !latestVersion.equals(oldVersion)) {
+                    // Download latest license
+                    downloadKeyFile(keyfileName, latestVersion);
+                } else {
+                    // License file is up to date
+                    File licenseFilePath = null;
+                    if (new File(licenseDir, keyfileName).exists()) {
+                        licenseFilePath = new File(licenseDir, keyfileName);
+                    } else if (new File(licenseDir, lastSavedFile).exists()) {
+                        licenseFilePath = new File(licenseDir, lastSavedFile);
+                    }
+                    if (licenseFilePath != null) {
+                        keyLicensePath = licenseFilePath.getPath();
+                        sharedPreferences.edit().putString(DownloadUtils.LICENSE_PATH, keyLicensePath).apply();
+                    } else {
+                        onErrora(DownloadUtils.ERROR_CODE_FILE_NOT_FOUND, null);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String s, ANError error) {
+                onErrora(s, error);
+            }
+
+            private void downloadKeyFile(String finalKeyfileName, String finalUpdatedVersion) {
+                showProgressDialog();
+                AccuraLog.loge(TAG, "Start Download key license : " );
+
+                DownloadUtils.getInstance(new AccuraDownloadListener() {
+                    @Override
+                    public void onDownloadComplete(String fileName) {
+                        sharedPreferences.edit().putString(DownloadUtils.LICENSE_VERSION, finalUpdatedVersion).apply();
+                        sharedPreferences.edit().putString(DownloadUtils.LICENSE_NAME, fileName).apply();
+                        keyLicensePath = licenseDir.getPath() + "/" + fileName;
+                        sharedPreferences.edit().putString(DownloadUtils.LICENSE_PATH, keyLicensePath).apply();
+                        if (pDialog != null && pDialog.isShowing()) {
+                            pDialog.dismiss();
+                        }
+                        nativeThread.start();
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+                        if (pDialog != null) {
+                            pDialog.setProgress(progress);
+                            AccuraLog.loge(TAG, "on Key Progress : " + progress);
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(String s, ANError error) {
+                        AccuraLog.loge("TAG", "Download key file: " +  Log.getStackTraceString(error));
+                        error.printStackTrace();
+                        sharedPreferences.edit().putString(DownloadUtils.LICENSE_VERSION, "").apply();
+                        if (pDialog != null && pDialog.isShowing()) {
+                            pDialog.dismiss();
+                        }
+                        onErrora("Key license error " + s, error);
+                    }
+                }).downloadLicenseFile(licenseDir.getPath(), link.substring(0, link.lastIndexOf("/")+1)+ finalKeyfileName, finalKeyfileName, lastSavedFile);
+            }
+
+        }).parseFile(licenseDir.getPath(), link, link.substring(link.lastIndexOf("/")));
+    }
+
+    public void onErrora(String s, ANError error) {
+        Toast.makeText(MainActivity.this, s+"\n"+Log.getStackTraceString(error), Toast.LENGTH_SHORT).show();
+        if (pDialog != null && pDialog.isShowing()) {
+            pDialog.dismiss();
+        }
+        nativeThread.start();
+    }
+
+    private void download() {
+        if (!isFinishing()) {
+            progressBar.show();
+        }
+        downloadTextFile(this, "https://example.com/config.json");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         engine = new RecogEngine();
 
         btnCapturedMrz = findViewById(R.id.lout_captured_mrz);
@@ -344,10 +500,10 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressBar.setMessage("Please wait...");
         progressBar.setCancelable(false);
-        if (!isFinishing()) {
-            progressBar.show();
-            nativeThread.start();
-        }
+        download();
+//        if (!isFinishing()) {
+//            progressBar.show();
+//            nativeThread.start();
+//        }
     }
-
 }

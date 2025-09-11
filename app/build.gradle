@@ -46,5 +46,7 @@ dependencies {
 
     // implement Accura MRZ SDK
     implementation 'com.github.accurascan:AccuraMRZ-AndroidSDK:5.0.7'
+    implementation 'com.github.amitshekhariitbhu.Fast-Android-Networking:android-networking:1.0.4'
+
 
 }
